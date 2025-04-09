@@ -1,0 +1,39 @@
+<meta charset="UTF-8">
+<h1>Страница заказчика</h1>
+<p>Здесь заказчик может создать новый заказ.</p>
+
+<form id="createOrderForm">
+    <label for="technicalSpecification">Техническое задание:</label><br>
+    <textarea id="technicalSpecification" required></textarea><br><br>
+    <button type="submit">Создать заказ</button>
+</form>
+
+<script>
+    const createOrderForm = document.getElementById('createOrderForm');
+    createOrderForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const technicalSpecification = document.getElementById('technicalSpecification').value;
+
+        const response = await fetch('http://localhost:8080/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                technicalSpecification: technicalSpecification,
+                customer: { id: 1 } // 👈 обязательно так, а не просто customerId
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            alert('Ошибка при создании заказа: ' + error);
+            return;
+        }
+
+        const newOrder = await response.json();
+        console.log('Order created:', newOrder);
+        alert('Заказ создан!');
+    });
+</script>

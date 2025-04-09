@@ -1,0 +1,33 @@
+<meta charset="UTF-8">
+
+<h1>Страница специалиста по сертификации</h1>
+<p>Здесь специалист по сертификации проверяет продукцию.</p>
+
+<form id="certificationForm">
+    <label for="certificationStatus">Статус сертификации:</label><br>
+    <input type="text" id="certificationStatus" required><br><br>
+    <button type="submit">Сертифицировать продукцию</button>
+</form>
+
+<script>
+    const certificationForm = document.getElementById('certificationForm');
+    certificationForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const certificationStatus = document.getElementById('certificationStatus').value;
+
+        const response = await fetch('/certifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                certificationStatus: certificationStatus
+            })
+        });
+
+        const certification = await response.json();
+        console.log('Certification completed:', certification);
+        alert('Продукция сертифицирована!');
+    });
+</script>

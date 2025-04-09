@@ -1,0 +1,40 @@
+<meta charset="UTF-8">
+<h1>Страница менеджера по закупкам</h1>
+<p>Здесь менеджер по закупкам закупает материалы.</p>
+
+<form id="purchaseForm">
+    <label for="materialName">Название материала:</label><br>
+    <input type="text" id="materialName" required><br><br>
+    <label for="quantity">Количество:</label><br>
+    <input type="number" id="quantity" required><br><br>
+    <label for="supplier">Поставщик:</label><br>
+    <input type="text" id="supplier" required><br><br>
+    <button type="submit">Закупить материал</button>
+</form>
+
+<script>
+    const purchaseForm = document.getElementById('purchaseForm');
+    purchaseForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const materialName = document.getElementById('materialName').value;
+        const quantity = document.getElementById('quantity').value;
+        const supplier = document.getElementById('supplier').value;
+
+        const response = await fetch('/materials', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: materialName,
+                quantity: quantity,
+                supplier: supplier
+            })
+        });
+
+        const material = await response.json();
+        console.log('Material purchased:', material);
+        alert('Материал закуплен!');
+    });
+</script>

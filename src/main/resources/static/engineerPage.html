@@ -1,0 +1,33 @@
+
+<meta charset="UTF-8">
+<h1>Страница инженера</h1>
+<p>Здесь инженер разрабатывает техническую модель двигателя.</p>
+
+<form id="engineDesignForm">
+    <label for="modelDescription">Описание модели:</label><br>
+    <textarea id="modelDescription" required></textarea><br><br>
+    <button type="submit">Разработать модель</button>
+</form>
+
+<script>
+    const engineDesignForm = document.getElementById('engineDesignForm');
+    engineDesignForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const modelDescription = document.getElementById('modelDescription').value;
+
+        const response = await fetch('/models', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                description: modelDescription
+            })
+        });
+
+        const model = await response.json();
+        console.log('Model developed:', model);
+        alert('Модель разработана!');
+    });
+</script>

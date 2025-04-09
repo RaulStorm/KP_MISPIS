@@ -1,0 +1,39 @@
+<meta charset="UTF-8">
+
+<h1>Страница главного инженера</h1>
+<p>Здесь главный инженер утверждает технические чертежи.</p>
+
+<div id="modelList"></div>
+
+<script>
+    async function loadModels() {
+        const response = await fetch('/models');
+        const models = await response.json();
+
+        const modelListDiv = document.getElementById('modelList');
+        models.forEach(model => {
+            const modelDiv = document.createElement('div');
+            modelDiv.innerText = `Модель ID: ${model.id}, Описание: ${model.description}`;
+            modelListDiv.appendChild(modelDiv);
+
+            // Кнопка для утверждения модели
+            const approveButton = document.createElement('button');
+            approveButton.innerText = 'Утвердить модель';
+            approveButton.onclick = async () => {
+                const updatedModel = { ...model, status: 'Модель утверждена' };
+                await fetch(`/models/${model.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedModel)
+                });
+                alert('Модель утверждена!');
+                loadModels(); // Перезагружаем модели
+            };
+            modelDiv.appendChild(approveButton);
+        });
+    }
+
+    loadModels();
+</script>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Регистрация / Вход</title>
+</head>
+<body>
+<h2>Регистрация</h2>
+<form id="registerForm">
+    <input type="text" name="username" placeholder="Имя пользователя" required><br>
+    <input type="password" name="password" placeholder="Пароль" required><br>
+    <select name="role" required>
+        <option value="">Выберите роль</option>
+        <option value="customer">Заказчик</option>
+        <option value="sales_manager">Менеджер по работе с клиентом</option>
+        <option value="procurement_manager">Менеджер по закупкам</option>
+        <option value="engineer">Инженер</option>
+        <option value="chief_engineer">Главный инженер</option>
+        <option value="certification_specialist">Специалист по сертификации</option>
+        <option value="logistics_specialist">Специалист по логистике</option>
+    </select>
+
+    <button type="submit">Зарегистрироваться</button>
+</form>
+
+<hr>
+
+<h2>Вход</h2>
+<form id="loginForm">
+    <input type="text" name="username" placeholder="Имя пользователя" required><br>
+    <input type="password" name="password" placeholder="Пароль" required><br>
+    <button type="submit">Войти</button>
+</form>
+
+<script>
+    // Обработчик формы регистрации
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const user = {
+            username: form.username.value,
+            password: form.password.value,
+            role: form.role.value
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user)
+            });
+
+            if (!response.ok) {
+                const err = await response.text();
+                alert("Ошибка регистрации: " + err);
+                return;
+            }
+
+            alert("Пользователь успешно зарегистрирован");
+
+            // Очистить форму
+            form.reset();
+
+        } catch (error) {
+            alert("Ошибка запроса: " + error.message);
+        }
+    });
+
+    // Обработчик формы входа
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const user = {
+            username: form.username.value,
+            password: form.password.value
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user)
+            });
+
+            if (!response.ok) {
+                const err = await response.text();
+                alert("Ошибка входа: " + err);
+                return;
+            }
+
+            const role = await response.text();
+            alert("Успешный вход. Ваша роль: " + role);
+
+            const roleToPage = {
+                customer: "customerPage.html",
+                sales_manager: "clientManagerPage.html",
+                procurement_manager: "procurementManagerPage.html",
+                engineer: "engineerPage.html",
+                chief_engineer: "chiefEngineerPage.html",
+                certification_specialist: "certificationSpecialistPage.html",
+                logistics_specialist: "logisticsSpecialistPage.html"
+            };
+
+            window.location.href = roleToPage[role] || "index.html";
+        } catch (error) {
+            alert("Ошибка запроса: " + error.message);
+        }
+    });
+</script>
+
+</body>
+</html>

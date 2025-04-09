@@ -1,0 +1,33 @@
+<meta charset="UTF-8">
+
+<h1>Страница специалиста по логистике</h1>
+<p>Здесь специалист по логистике организует доставку продукции заказчику.</p>
+
+<form id="deliveryForm">
+    <label for="deliveryDetails">Детали доставки:</label><br>
+    <textarea id="deliveryDetails" required></textarea><br><br>
+    <button type="submit">Организовать доставку</button>
+</form>
+
+<script>
+    const deliveryForm = document.getElementById('deliveryForm');
+    deliveryForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const deliveryDetails = document.getElementById('deliveryDetails').value;
+
+        const response = await fetch('/deliveries', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                deliveryDetails: deliveryDetails
+            })
+        });
+
+        const delivery = await response.json();
+        console.log('Delivery organized:', delivery);
+        alert('Доставка организована!');
+    });
+</script>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Менеджер по работе с клиентами</title>
+</head>
+<body>
+<h1>Добро пожаловать, Менеджер!</h1>
+<div id="assignedOrderSection" style="display:none;">
+    <h3>Ваш текущий заказ:</h3>
+    <p id="assignedOrderInfo"></p>
+</div>
+
+<div id="pendingOrdersSection">
+    <h3>Заказы в ожидании:</h3>
+    <ul id="ordersList"></ul>
+</div>
+
+<script>
+    const managerId = 2; // ⚠️ Заменить на ID авторизованного менеджера
+
+    async function loadAssignedOrder() {
+        const res = await fetch(`/orders/assigned/${managerId}`);
+        if (res.ok) {
+            const order = await res.json();
+            if (order && order.id) {
+                document.getElementById("assignedOrderInfo").innerText =
+                    `ID: ${order.id}, ТЗ: ${order.technicalSpecification}`;
+                document.getElementById("assignedOrderSection").style.display = "block";
+                document.getElementById("pendingOrdersSection").style.display = "none";
+                return;
+            }
+        }
+        loadPendingOrders();
+    }
+
+    async function loadPendingOrders() {
+        const res = await fetch('/orders/pending');
+        const orders = await res.json();
+
+        const list = document.getElementById("ordersList");
+        list.innerHTML = "";
+        orders.forEach(order => {
+            const li = document.createElement("li");
+            li.innerHTML = `ID: ${order.id}, ТЗ: ${order.technicalSpecification}
+                <button onclick="assignOrder(${order.id})">Выбрать</button>`;
+            list.appendChild(li);
+        });
+    }
+
+    async function assignOrder(orderId) {
+        const res = await fetch(`/orders/assign?orderId=${orderId}&managerId=${managerId}`, {
+            method: 'POST'
+        });
+
+        if (res.ok) {
+            alert("Заказ назначен!");
+            loadAssignedOrder();
+        } else {
+            alert("Ошибка назначения заказа");
+        }
+    }
+
+    loadAssignedOrder();
+</script>
+</body>
+</html>
