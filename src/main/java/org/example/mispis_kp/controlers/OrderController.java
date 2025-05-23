@@ -27,8 +27,8 @@ public class OrderController {
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
         // Если передаётся только customer_id — можно подтянуть пользователя
-        if (order.getCustomer() != null && order.getCustomer().getId() != null) {
-            User customer = userRepository.findById(order.getCustomer().getId()).orElse(null);
+        if (order.getCustomerId() != null ) {
+            User customer = userRepository.findById(order.getCustomerId()).orElse(null);
             order.setCustomer(customer);
         }
 

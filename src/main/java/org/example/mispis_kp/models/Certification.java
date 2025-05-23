@@ -1,7 +1,11 @@
 package org.example.mispis_kp.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 public class Certification {
 
@@ -22,6 +26,5 @@ public class Certification {
         this.order = order;
     }
 
-    public void setCertificationStatus(String status) {
-    }
+
 }
